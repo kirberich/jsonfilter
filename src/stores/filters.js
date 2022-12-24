@@ -154,7 +154,7 @@ export const useFilterStore = defineStore("filter", {
       if (filter.field == "") {
         return true;
       }
-      if (item[filter.field] == undefined) {
+      if (item[filter.field] === undefined) {
         return {
           error: `Field ${filter.field} not present!`,
           matches: false,
