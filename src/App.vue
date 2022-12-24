@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>JSON Cleaner 🧹</h1>
+    <h1>✨ My JSON is a thing of Beauty 🧹</h1>
     <RouterView />
   </div>
 </template>

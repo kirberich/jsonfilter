@@ -10,3 +10,12 @@
 main {
   padding: 2rem;
 }
+
+input,select {
+  height: 1.5rem;
+  line-height: 1.5rem;
+  border: 1px solid #888888;
+  border-radius: 3px;
+  padding: 2px;
+  display: inline;
+}

@@ -57,6 +57,7 @@
 }
 .filter-element {
   display: inline-block;
+  margin-bottom: 10px;
 }
 .filter-operator {
   font-size: 10pt;
