@@ -1,11 +1,15 @@
 <template>
   <main>
-    <h1>JSON Cleaner 🧹</h1>
+    <div class="intro">
+      Paste JSON below and add filters to clean the data. Everything is done
+      locally, the data never leaves your computer.
+    </div>
     <textarea placeholder="Paste json here" v-model="data" />
     <div class="errors">
       <span v-for="error in errors" :key="error">{{ error }}</span>
     </div>
     <filter-container />
+    <h2>Results</h2>
     <textarea
       placeholder="Filtered json"
       v-model="formattedFilteredData"
@@ -24,6 +28,13 @@ textarea {
 }
 .errors {
   color: rgb(200, 0, 0);
+}
+.h1 {
+  margin-bottom: 0;
+}
+.intro {
+  margin-left: 10px;
+  font-style: italic;
 }
 </style>
 

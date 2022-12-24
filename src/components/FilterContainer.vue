@@ -1,54 +1,58 @@
 <template>
   <div class="filter-container">
     <div class="filter-title">
-      <h2>Filters <a @click="addFilter">➕</a></h2>
+      <h2>Filters</h2>
     </div>
 
-    <div v-for="filter in filters" :key="filter.id">
-      <div class="filter-element">
-        Field
-
-        <input
-          type="text"
-          :value="filter.field"
-          @input="updateField"
-          :data-filter-id="filter.id"
-        />
-
-        <select
-          :value="filter.operator"
-          @input="updateOperator"
-          :data-filter-id="filter.id"
-          class="filter-operator"
-        >
-          <option value="exact">Equals</option>
-          <option value="empty">Is Empty</option>
-          <option value="not-empty">Is Not Empty</option>
-          <option value="contains">Contains</option>
-        </select>
-
-        <template v-if="['exact', 'contains'].includes(filter.operator)">
-          Value
+    <div class="filters">
+      <div v-for="filter in filters" :key="filter.id" class="filter">
+        <div class="filter-element">
           <input
             type="text"
-            :value="filter.value"
-            @input="updateValue"
+            :value="filter.field"
+            @input="updateField"
             :data-filter-id="filter.id"
+            placeholder="Field"
           />
-        </template>
+
+          <select
+            :value="filter.operator"
+            @input="updateOperator"
+            :data-filter-id="filter.id"
+            class="filter-operator"
+          >
+            <option value="exact">Equals</option>
+            <option value="empty">Is Empty</option>
+            <option value="not-empty">Is Not Empty</option>
+            <option value="contains">Contains</option>
+          </select>
+
+          <template v-if="['exact', 'contains'].includes(filter.operator)">
+            <input
+              type="text"
+              :value="filter.value"
+              @input="updateValue"
+              :data-filter-id="filter.id"
+              placeholder="value"
+            />
+          </template>
+        </div>
+        <a @click="deleteFilter(filter)" href="#" class="delete-filter">❌</a>
       </div>
-      <a @click="deleteFilter(filter)" href="#" class="delete-filter">❌</a>
+      <a @click="addFilter" href="#">Add filter</a>
     </div>
   </div>
 </template>
 
 <style lang="scss">
 .filter-container {
-  margin-bottom: 20px;
-  a.delete-filter {
-    padding-left: 10px;
-    font-size: 10pt;
+  a {
     text-decoration: none;
+    color: rgb(00, 100, 100);
+  }
+  a.delete-filter {
+    padding-left: 5px;
+    font-size: 10pt;
   }
 }
 .filter-element {
@@ -57,6 +61,10 @@
 .filter-operator {
   font-size: 10pt;
   margin-left: 5px;
+  margin-right: 5px;
+}
+.filters {
+  padding: 10px;
 }
 .vue3-autocomplete-container {
   display: inline;
