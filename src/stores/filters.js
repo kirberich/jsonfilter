@@ -41,6 +41,9 @@ export const useFilterStore = defineStore("filter", {
       filters: {},
       rawJsonData: "",
       dataIsValid: true,
+      parseTimer: null,
+      filterTimer: null,
+      isFiltering: true,
       errors: [],
       parsedJsonData: [],
       filteredJsonData: [],
@@ -55,7 +58,22 @@ export const useFilterStore = defineStore("filter", {
     // Data
     updateRawData(newData) {
       this.rawJsonData = newData;
-      this.parseData();
+      this.scheduleParsing();
+    },
+    scheduleFiltering() {
+      // Set (or reset) a timer to run the filtering
+      if (this.filterTimer) {
+        clearTimeout(this.filterTimer);
+      }
+      this.filterTimer = setTimeout(this.applyFilters, 500);
+      this.isFiltering = true;
+    },
+    scheduleParsing() {
+      // Set (or reset) a timer to run the parsing
+      if (this.parseTimer) {
+        clearTimeout(this.parseTimer);
+      }
+      this.parseTimer = setTimeout(this.parseData, 500);
     },
     parseData() {
       // parse the latest raw data into json
@@ -102,37 +120,32 @@ export const useFilterStore = defineStore("filter", {
         operator: "exact",
       };
 
-      this.applyFilters();
+      this.scheduleFiltering();
     },
     deleteFilter(filterId) {
       delete this.filters[filterId];
 
-      this.storeFilters();
-      this.applyFilters();
+      this.scheduleFiltering();
     },
     updateFilterValue(filterId, newValue) {
       this.filters[filterId].value = newValue;
 
-      this.storeFilters();
-      this.applyFilters();
+      this.scheduleFiltering();
     },
     updateFilterField(filterId, newField) {
       this.filters[filterId].field = newField;
 
-      this.storeFilters();
-      this.applyFilters();
+      this.scheduleFiltering();
     },
     updateFilterOperator(filterId, newOperator) {
       this.filters[filterId].operator = newOperator;
 
-      this.storeFilters();
-      this.applyFilters();
+      this.scheduleFiltering();
     },
     setFilters(newFilters, nextFilterId) {
       this.filters = newFilters;
       this.nextFilterId = nextFilterId;
-      this.storeFilters();
-      this.applyFilters();
+      this.scheduleFiltering();
     },
     storeFilters() {
       var searchParams = new URLSearchParams();
@@ -140,7 +153,6 @@ export const useFilterStore = defineStore("filter", {
         searchParams.set(`${filter.field}__${filter.operator}`, filter.value);
       }
       const asString = searchParams.toString();
-      console.log("storing filters...");
       var newurl =
         window.location.protocol +
         "//" +
@@ -165,7 +177,11 @@ export const useFilterStore = defineStore("filter", {
       const result = operator(item, filter);
       return result;
     },
-    applyFilters() {
+    async applyFilters() {
+      console.log("applying filters...");
+      await new Promise((r) => setTimeout(r, 1));
+      this.storeFilters();
+
       let newFilteredData = [];
       let newErrors = {};
       for (const item of this.parsedJsonData) {
@@ -192,6 +208,8 @@ export const useFilterStore = defineStore("filter", {
 
       this.filteredJsonData = newFilteredData;
       this.errors = newErrors;
+      this.isFiltering = false;
+      console.log("done");
     },
   },
 });

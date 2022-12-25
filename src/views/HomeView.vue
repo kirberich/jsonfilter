@@ -4,12 +4,14 @@
       Paste JSON below and add filters to clean the data. Everything is done
       locally, the data never leaves your computer.
     </div>
-    <textarea placeholder="Paste json here" v-model="data" />
+    <textarea placeholder="Paste json here" @input="updateData" />
     <div class="errors">
       <span v-for="error in errors" :key="error">{{ error }}</span>
     </div>
     <filter-container />
-    <h2>Results</h2>
+    <h2>
+      Results <span v-if="isFiltering" class="filtering">Filtering...</span>
+    </h2>
     <textarea
       placeholder="Filtered json"
       v-model="formattedFilteredData"
@@ -31,6 +33,10 @@ textarea {
 }
 .h1 {
   margin-bottom: 0;
+}
+.filtering {
+  display: inline-block;
+  font-size: 8pt;
 }
 .intro {
   margin-left: 10px;
@@ -76,6 +82,17 @@ export default {
     copyData: function () {
       navigator.clipboard.writeText(this.formattedFilteredData);
     },
+    updateData: function (event) {
+      const timeoutId = window.setTimeout(() => {}, 0);
+      const filterStore = this.filterStore;
+      for (let id = timeoutId; id >= 0; id -= 1) {
+        window.clearTimeout(id);
+      }
+
+      setTimeout(() => {
+        filterStore.updateRawData(event.target.value);
+      }, 200);
+    },
   },
   computed: {
     ...mapStores(useFilterStore),
@@ -86,20 +103,8 @@ export default {
       "filteredJsonData",
       "parsedJsonData",
       "formattedFilteredData",
+      "isFiltering",
     ]),
-    data: {
-      get() {
-        return this.rawJsonData;
-      },
-      set(newValue) {
-        this.filterStore.updateRawData(newValue);
-      },
-    },
-  },
-  watch: {
-    parsedData() {
-      // this.run();
-    },
   },
 };
 </script>
