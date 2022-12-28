@@ -12,6 +12,16 @@ const FILTER_OPERATORS = {
 
     return String(item[filter.field]) == filter.value;
   },
+  "not-exact": function (item, filter) {
+    if (Array.isArray(item[filter.field])) {
+      return {
+        error: `Cannot check for 'doesn't equal' for ${filter.field}, field is a list. try 'doesn't contain' instead!`,
+        matches: false,
+      };
+    }
+
+    return String(item[filter.field]) != filter.value;
+  },
   empty: function (item, filter) {
     return item[filter.field] == null || item[filter.field] == "";
   },
@@ -30,6 +40,20 @@ const FILTER_OPERATORS = {
         }
       }
       return false;
+    }
+  },
+  "not-contains": function (item, filter) {
+    if (typeof item[filter.field] === "string") {
+      return !item[filter.field].includes(filter.value);
+    }
+
+    if (Array.isArray(item[filter.field])) {
+      for (const entry of item[filter.field]) {
+        if (entry == filter.value) {
+          return false;
+        }
+      }
+      return true;
     }
   },
 };

@@ -22,12 +22,20 @@
             class="filter-operator"
           >
             <option value="exact">Equals</option>
+            <option value="not-exact">Doesn't equal</option>
             <option value="empty">Is Empty</option>
             <option value="not-empty">Is Not Empty</option>
             <option value="contains">Contains</option>
+            <option value="not-contains">Doesn't contain</option>
           </select>
 
-          <template v-if="['exact', 'contains'].includes(filter.operator)">
+          <template
+            v-if="
+              ['exact', 'contains', 'not-exact', 'not-contains'].includes(
+                filter.operator
+              )
+            "
+          >
             <input
               type="text"
               :value="filter.value"
